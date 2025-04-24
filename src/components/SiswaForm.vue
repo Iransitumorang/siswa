@@ -1,14 +1,15 @@
 <template>
-  <div class="card shadow-sm mb-4 border-0 bg-primary-gradient">
+  <div class="card shadow-sm mb-4 border-0 bg-success-gradient">
     <div class="card-body p-4">
       <h2 class="text-center mb-4 text-white">
         <i :class="props.siswaEdit ? 'bi bi-pencil-square me-2' : 'bi bi-plus-circle me-2'"></i>
         {{ props.siswaEdit ? 'Edit Siswa' : 'Tambah Siswa' }}
       </h2>
       
-      <form @submit.prevent="tambahAtauEditSiswa" class="row g-2 align-items-center">
-        <div class="col-md-4">
-          <div class="input-group">
+      <form @submit.prevent="tambahAtauEditSiswa" class="row g-3 align-items-center">
+        
+        <div class="col-md-3 ms-5">
+          <div class="input-group input-group-sm">
             <span class="input-group-text bg-white"><i class="bi bi-person-fill text-success"></i></span>
             <input
               v-model="nama"
@@ -20,8 +21,8 @@
           </div>
         </div>
         
-        <div class="col-md-4">
-          <div class="input-group">
+        <div class="col-md-3">
+          <div class="input-group input-group-sm">
             <span class="input-group-text bg-white"><i class="bi bi-geo-alt-fill text-success"></i></span>
             <input
               v-model="alamat"
@@ -34,7 +35,7 @@
         </div>
         
         <div class="col-md-2">
-          <div class="input-group">
+          <div class="input-group input-group-sm">
             <span class="input-group-text bg-white"><i class="bi bi-calendar-event-fill text-success"></i></span>
             <input
               v-model="umur"
@@ -46,14 +47,25 @@
           </div>
         </div>
         
-        <div class="col-md-2 d-grid">
-          <button
-            type="submit"
-            class="btn btn-light text-success fw-bold"
-          >
-            <i :class="props.siswaEdit ? 'bi bi-check-lg me-1' : 'bi bi-plus-lg me-1'"></i>
-            {{ props.siswaEdit ? 'Update' : 'Tambah' }}
-          </button>
+        <div class="col-md-2">
+          <div class="d-flex h-100">
+            <button
+              type="submit"
+              class="btn btn-light text-success fw-bold btn-action"
+            >
+              <i :class="props.siswaEdit ? 'bi bi-check-lg me-1' : 'bi bi-plus-lg me-1'"></i>
+              {{ props.siswaEdit ? 'Update' : 'Tambah' }}
+            </button>
+            <button
+              v-if="props.siswaEdit"
+              @click="resetForm"
+              type="button"
+              class="btn btn-outline-light text-white fw-bold btn-action ms-2"
+            >
+              <i class="bi bi-x-lg me-1"></i>
+              Cancel
+            </button>
+          </div>
         </div>
       </form>
     </div>
@@ -120,8 +132,8 @@ const tambahAtauEditSiswa = async () => {
 </script>
 
 <style scoped>
-.bg-primary-gradient {
-  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+.bg-success-gradient {
+  background: linear-gradient(135deg, #198754 0%, #2a9d8f 100%);
   border-radius: 12px;
 }
 
@@ -131,5 +143,30 @@ const tambahAtauEditSiswa = async () => {
 
 .form-control {
   border-left: none;
+}
+
+.btn-outline-light:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Perfect button sizing */
+.btn-action {
+  height: 31px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.8125rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.input-group-sm {
+  height: 31px;
+}
+
+.input-group-sm .form-control,
+.input-group-sm .input-group-text {
+  height: 100%;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.8125rem;
 }
 </style>

@@ -10,7 +10,7 @@
               MANAJEMEN SISWA
             </h1>
             <p class="lead opacity-75">
-              Sistem pengelolaan data siswa berbasis Vue.js
+              Sistem pengelolaan data siswa berbasis Quarkus dan Vue.js
             </p>
           </div>
 
@@ -21,7 +21,7 @@
           />
 
           <div class="card shadow-sm border-0 bg-white bg-opacity-90">
-            <div class="card-body p-0">
+            <div v-if="siswaList.length">
               <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0">
                   <thead class="bg-success text-white">
@@ -57,11 +57,11 @@
                   </tbody>
                 </table>
               </div>
+            </div>
 
-              <div v-if="!siswaList.length" class="text-center py-5">
-                <i class="bi bi-emoji-frown display-5 text-muted"></i>
-                <p class="mt-3 text-muted">Belum ada data siswa</p>
-              </div>
+            <div v-if="!siswaList.length" class="text-center py-5">
+              <i class="bi bi-emoji-frown display-5 text-muted"></i>
+              <p class="mt-3 text-muted">Belum ada data siswa</p>
             </div>
           </div>
         </div>
