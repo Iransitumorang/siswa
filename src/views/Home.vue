@@ -74,26 +74,65 @@
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import SiswaForm from '../components/SiswaForm.vue'
+import Swal from 'sweetalert2'
 
 const siswaList = ref([])
 const siswaEdit = ref(null)
+
+const showSuccessAlert = (message) => {
+  Swal.fire({
+    icon: 'success',
+    title: 'Sukses!',
+    text: message,
+    timer: 2000,
+    showConfirmButton: false,
+    background: '#f8f9fa',
+    position: 'center',
+    width: 400,
+  })
+}
+
+const showErrorAlert = (message) => {
+  Swal.fire({
+    icon: 'error',
+    title: 'Gagal!',
+    text: message,
+    background: '#f8f9fa',
+    position: 'center',
+    confirmButtonColor: '#198754',
+  })
+}
 
 const fetchSiswa = async () => {
   try {
     const res = await axios.get('http://localhost:8081/siswa')
     siswaList.value = res.data
   } catch (err) {
+    showErrorAlert('Gagal mengambil data siswa')
     console.error('Gagal ambil data:', err)
   }
 }
 
 const hapusSiswa = async (id) => {
-  if (confirm('Apakah Anda yakin ingin menghapus siswa ini?')) {
+  const { isConfirmed } = await Swal.fire({
+    title: 'Yakin ingin menghapus?',
+    text: "Data yang dihapus tidak dapat dikembalikan!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'Ya, Hapus!',
+    cancelButtonText: 'Batal',
+  })
+
+  if (isConfirmed) {
     try {
       await axios.delete(`http://localhost:8081/siswa/${id}`)
+      showSuccessAlert('Data siswa berhasil dihapus')
       fetchSiswa()
     } catch (err) {
-      console.error('Gagal hapus siswa:', err)
+      showErrorAlert('Gagal menghapus data siswa')
+      console.error('Gagal hapus:', err)
     }
   }
 }

@@ -75,6 +75,7 @@
 <script setup>
 import { ref, watch } from 'vue'
 import axios from 'axios'
+import Swal from 'sweetalert2'
 
 const props = defineProps({
   siswaEdit: Object,
@@ -107,26 +108,78 @@ const resetForm = () => {
 
 const API_URL = 'http://localhost:8081/siswa'
 
+const showSuccessAlert = (message) => {
+  Swal.fire({
+    icon: 'success',
+    title: 'Sukses!',
+    text: message,
+    timer: 2000,
+    showConfirmButton: false,
+    background: '#f8f9fa',
+    position: 'center',
+    width: 400,
+  })
+}
+
+const showErrorAlert = (message) => {
+  Swal.fire({
+    icon: 'error',
+    title: 'Gagal!',
+    text: message,
+    background: '#f8f9fa',
+    position: 'center',
+    confirmButtonColor: '#198754',
+  })
+}
+
 const tambahAtauEditSiswa = async () => {
   try {
+    let response
     if (props.siswaEdit) {
-      await axios.put(`${API_URL}/${props.siswaEdit.id}`, {
+      response = await axios.put(`${API_URL}/${props.siswaEdit.id}`, {
         nama: nama.value,
         alamat: alamat.value,
         umur: umur.value,
       })
+      showSuccessAlert('Data siswa berhasil diperbarui')
     } else {
-      await axios.post(API_URL, {
+      response = await axios.post(API_URL, {
         nama: nama.value,
         alamat: alamat.value,
         umur: umur.value,
       })
+      showSuccessAlert('Data siswa berhasil ditambahkan')
     }
-
+    
     resetForm()
     emit('siswa-added')
   } catch (err) {
+    showErrorAlert(err.response?.data?.message || 'Gagal menyimpan data siswa')
     console.error('Gagal simpan:', err)
+  }
+}
+
+const hapusSiswa = async (id) => {
+  const { isConfirmed } = await Swal.fire({
+    title: 'Yakin ingin menghapus?',
+    text: "Data yang dihapus tidak dapat dikembalikan!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'Ya, Hapus!',
+    cancelButtonText: 'Batal',
+  })
+
+  if (isConfirmed) {
+    try {
+      await axios.delete(`${API_URL}/${id}`)
+      showSuccessAlert('Data siswa berhasil dihapus')
+      emit('siswa-added')
+    } catch (err) {
+      showErrorAlert('Gagal menghapus data siswa')
+      console.error('Gagal hapus:', err)
+    }
   }
 }
 </script>
