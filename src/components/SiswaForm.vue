@@ -1,35 +1,62 @@
 <template>
-  <div class="bg-white rounded-2xl shadow-xl p-6 w-full max-w-xl mx-auto">
-    <h2 class="text-2xl font-bold text-indigo-700 mb-4">
-      {{ props.siswaEdit ? '✏️ Edit Siswa' : '➕ Tambah Siswa' }}
-    </h2>
-    <form @submit.prevent="tambahAtauEditSiswa" class="space-y-4">
-      <input
-        v-model="nama"
-        placeholder="Nama"
-        required
-        class="w-full px-4 py-3 rounded-xl border border-indigo-200 focus:ring-2 focus:ring-indigo-500 outline-none"
-      />
-      <input
-        v-model="alamat"
-        placeholder="Alamat"
-        required
-        class="w-full px-4 py-3 rounded-xl border border-indigo-200 focus:ring-2 focus:ring-indigo-500 outline-none"
-      />
-      <input
-        v-model="umur"
-        type="number"
-        placeholder="Umur"
-        required
-        class="w-full px-4 py-3 rounded-xl border border-indigo-200 focus:ring-2 focus:ring-indigo-500 outline-none"
-      />
-      <button
-        type="submit"
-        class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold tracking-wide shadow-lg transition"
-      >
-        {{ props.siswaEdit ? 'Update Siswa' : 'Tambah Siswa' }}
-      </button>
-    </form>
+  <div class="card shadow-sm mb-4 border-0 bg-gradient">
+    <div class="card-body p-4">
+      <h2 class="text-center mb-4 text-white">
+        <i :class="props.siswaEdit ? 'bi bi-pencil-square me-2' : 'bi bi-plus-circle me-2'"></i>
+        {{ props.siswaEdit ? 'Edit Siswa' : 'Tambah Siswa' }}
+      </h2>
+      
+      <form @submit.prevent="tambahAtauEditSiswa" class="row g-3 align-items-center">
+        <div class="col-md-4">
+          <div class="input-group">
+            <span class="input-group-text bg-white"><i class="bi bi-person-fill text-primary"></i></span>
+            <input
+              v-model="nama"
+              type="text"
+              class="form-control"
+              placeholder="Nama Siswa"
+              required
+            />
+          </div>
+        </div>
+        
+        <div class="col-md-4">
+          <div class="input-group">
+            <span class="input-group-text bg-white"><i class="bi bi-geo-alt-fill text-primary"></i></span>
+            <input
+              v-model="alamat"
+              type="text"
+              class="form-control"
+              placeholder="Alamat"
+              required
+            />
+          </div>
+        </div>
+        
+        <div class="col-md-2">
+          <div class="input-group">
+            <span class="input-group-text bg-white"><i class="bi bi-calendar-event-fill text-primary"></i></span>
+            <input
+              v-model="umur"
+              type="number"
+              class="form-control"
+              placeholder="Umur"
+              required
+            />
+          </div>
+        </div>
+        
+        <div class="col-md-2 d-grid">
+          <button
+            type="submit"
+            class="btn btn-light text-primary fw-bold"
+          >
+            <i :class="props.siswaEdit ? 'bi bi-check-lg me-1' : 'bi bi-plus-lg me-1'"></i>
+            {{ props.siswaEdit ? 'Update' : 'Tambah' }}
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
 </template>
 
@@ -41,7 +68,7 @@ const props = defineProps({
   siswaEdit: Object,
 })
 
-const emit = defineEmits(['siswa-added'])
+const emit = defineEmits(['siswa-added', 'cancel-edit'])
 
 const nama = ref('')
 const alamat = ref('')
@@ -58,6 +85,13 @@ watch(
   },
   { immediate: true }
 )
+
+const resetForm = () => {
+  nama.value = ''
+  alamat.value = ''
+  umur.value = 0
+  emit('cancel-edit')
+}
 
 const API_URL = 'http://localhost:8081/siswa'
 
@@ -77,12 +111,16 @@ const tambahAtauEditSiswa = async () => {
       })
     }
 
-    nama.value = ''
-    alamat.value = ''
-    umur.value = 0
+    resetForm()
     emit('siswa-added')
   } catch (err) {
     console.error('Gagal simpan:', err)
   }
 }
 </script>
+
+<style scoped>
+.bg-gradient {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+</style>
