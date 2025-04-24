@@ -1,6 +1,6 @@
 <template>
   <main>
-    <h1>CRUD Siswa Vue + Quarkus</h1>
+    <h1>Super Learn</h1>
     <Home />
   </main>
 </template>
