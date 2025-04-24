@@ -1,15 +1,15 @@
 <template>
-  <div class="card shadow-sm mb-4 border-0 bg-gradient">
+  <div class="card shadow-sm mb-4 border-0 bg-primary-gradient">
     <div class="card-body p-4">
       <h2 class="text-center mb-4 text-white">
         <i :class="props.siswaEdit ? 'bi bi-pencil-square me-2' : 'bi bi-plus-circle me-2'"></i>
         {{ props.siswaEdit ? 'Edit Siswa' : 'Tambah Siswa' }}
       </h2>
       
-      <form @submit.prevent="tambahAtauEditSiswa" class="row g-3 align-items-center">
+      <form @submit.prevent="tambahAtauEditSiswa" class="row g-2 align-items-center">
         <div class="col-md-4">
           <div class="input-group">
-            <span class="input-group-text bg-white"><i class="bi bi-person-fill text-primary"></i></span>
+            <span class="input-group-text bg-white"><i class="bi bi-person-fill text-success"></i></span>
             <input
               v-model="nama"
               type="text"
@@ -22,7 +22,7 @@
         
         <div class="col-md-4">
           <div class="input-group">
-            <span class="input-group-text bg-white"><i class="bi bi-geo-alt-fill text-primary"></i></span>
+            <span class="input-group-text bg-white"><i class="bi bi-geo-alt-fill text-success"></i></span>
             <input
               v-model="alamat"
               type="text"
@@ -35,7 +35,7 @@
         
         <div class="col-md-2">
           <div class="input-group">
-            <span class="input-group-text bg-white"><i class="bi bi-calendar-event-fill text-primary"></i></span>
+            <span class="input-group-text bg-white"><i class="bi bi-calendar-event-fill text-success"></i></span>
             <input
               v-model="umur"
               type="number"
@@ -49,7 +49,7 @@
         <div class="col-md-2 d-grid">
           <button
             type="submit"
-            class="btn btn-light text-primary fw-bold"
+            class="btn btn-light text-success fw-bold"
           >
             <i :class="props.siswaEdit ? 'bi bi-check-lg me-1' : 'bi bi-plus-lg me-1'"></i>
             {{ props.siswaEdit ? 'Update' : 'Tambah' }}
@@ -120,7 +120,16 @@ const tambahAtauEditSiswa = async () => {
 </script>
 
 <style scoped>
-.bg-gradient {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+.bg-primary-gradient {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  border-radius: 12px;
+}
+
+.input-group-text {
+  border-right: none;
+}
+
+.form-control {
+  border-left: none;
 }
 </style>
