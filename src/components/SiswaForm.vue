@@ -1,11 +1,34 @@
 <template>
-  <div>
-    <form @submit.prevent="isEditMode ? updateSiswa() : tambahSiswa()">
-      <input v-model="formData.nama" placeholder="Nama" required />
-      <input v-model="formData.alamat" placeholder="Alamat" required />
-      <input v-model="formData.umur" type="number" placeholder="Umur" required />
-      <button type="submit">{{ isEditMode ? 'Update' : 'Tambah' }}</button>
-      <button v-if="isEditMode" type="button" @click="resetForm">Batal</button>
+  <div class="bg-white rounded-2xl shadow-xl p-6 w-full max-w-xl mx-auto">
+    <h2 class="text-2xl font-bold text-indigo-700 mb-4">
+      {{ props.siswaEdit ? '✏️ Edit Siswa' : '➕ Tambah Siswa' }}
+    </h2>
+    <form @submit.prevent="tambahAtauEditSiswa" class="space-y-4">
+      <input
+        v-model="nama"
+        placeholder="Nama"
+        required
+        class="w-full px-4 py-3 rounded-xl border border-indigo-200 focus:ring-2 focus:ring-indigo-500 outline-none"
+      />
+      <input
+        v-model="alamat"
+        placeholder="Alamat"
+        required
+        class="w-full px-4 py-3 rounded-xl border border-indigo-200 focus:ring-2 focus:ring-indigo-500 outline-none"
+      />
+      <input
+        v-model="umur"
+        type="number"
+        placeholder="Umur"
+        required
+        class="w-full px-4 py-3 rounded-xl border border-indigo-200 focus:ring-2 focus:ring-indigo-500 outline-none"
+      />
+      <button
+        type="submit"
+        class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold tracking-wide shadow-lg transition"
+      >
+        {{ props.siswaEdit ? 'Update Siswa' : 'Tambah Siswa' }}
+      </button>
     </form>
   </div>
 </template>
@@ -14,71 +37,52 @@
 import { ref, watch } from 'vue'
 import axios from 'axios'
 
+const props = defineProps({
+  siswaEdit: Object,
+})
+
+const emit = defineEmits(['siswa-added'])
+
+const nama = ref('')
+const alamat = ref('')
+const umur = ref(0)
+
+watch(
+  () => props.siswaEdit,
+  (newSiswa) => {
+    if (newSiswa) {
+      nama.value = newSiswa.nama
+      alamat.value = newSiswa.alamat
+      umur.value = newSiswa.umur
+    }
+  },
+  { immediate: true }
+)
+
 const API_URL = 'http://localhost:8081/siswa'
 
-const formData = ref({
-  id: null,
-  nama: '',
-  alamat: '',
-  umur: 0
-})
-
-const isEditMode = ref(false)
-
-const emit = defineEmits(['siswa-added', 'siswa-updated'])
-
-const props = defineProps({
-  siswaEdit: {
-    type: Object,
-    default: null
-  }
-})
-
-// Watch for changes in siswaEdit prop
-watch(() => props.siswaEdit, (newVal) => {
-  if (newVal) {
-    isEditMode.value = true
-    formData.value = { ...newVal }
-  } else {
-    resetForm()
-  }
-})
-
-const tambahSiswa = async () => {
+const tambahAtauEditSiswa = async () => {
   try {
-    await axios.post(API_URL, {
-      nama: formData.value.nama,
-      alamat: formData.value.alamat,
-      umur: formData.value.umur,
-    })
-    resetForm()
+    if (props.siswaEdit) {
+      await axios.put(`${API_URL}/${props.siswaEdit.id}`, {
+        nama: nama.value,
+        alamat: alamat.value,
+        umur: umur.value,
+      })
+    } else {
+      await axios.post(API_URL, {
+        nama: nama.value,
+        alamat: alamat.value,
+        umur: umur.value,
+      })
+    }
+
+    nama.value = ''
+    alamat.value = ''
+    umur.value = 0
     emit('siswa-added')
   } catch (err) {
-    console.error('Gagal tambah siswa:', err)
+    console.error('Gagal simpan:', err)
   }
-}
-
-const updateSiswa = async () => {
-  try {
-    await axios.put(`${API_URL}/${formData.value.id}`, {
-      nama: formData.value.nama,
-      alamat: formData.value.alamat,
-      umur: formData.value.umur,
-    })
-    resetForm()
-    emit('siswa-updated')
-  } catch (err) {
-    console.error('Gagal update siswa:', err)
-  }
-}
-
-const resetForm = () => {
-  formData.value = {
-    id: null,
-    nama: '',
-    alamat: '',
-    umur: 0
-  }
-  isEditMode.value = false
 }
 </script>
