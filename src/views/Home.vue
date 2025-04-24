@@ -1,6 +1,10 @@
 <template>
   <div>
-    <SiswaForm @siswa-added="fetchSiswa" />
+    <SiswaForm 
+      :siswaEdit="siswaEdit" 
+      @siswa-added="fetchSiswa" 
+      @siswa-updated="handleSiswaUpdated" 
+    />
 
     <h2>Daftar Siswa</h2>
     <table v-if="siswaList.length">
@@ -19,6 +23,7 @@
           <td>{{ siswa.umur }}</td>
           <td>
             <button @click="hapusSiswa(siswa.id)">Hapus</button>
+            <button @click="editSiswa(siswa)">Edit</button>
           </td>
         </tr>
       </tbody>
@@ -33,6 +38,7 @@ import axios from 'axios'
 import SiswaForm from '../components/SiswaForm.vue'
 
 const siswaList = ref([])
+const siswaEdit = ref(null)
 
 const fetchSiswa = async () => {
   try {
@@ -50,6 +56,15 @@ const hapusSiswa = async (id) => {
   } catch (err) {
     console.error('Gagal hapus siswa:', err)
   }
+}
+
+const editSiswa = (siswa) => {
+  siswaEdit.value = siswa
+}
+
+const handleSiswaUpdated = () => {
+  siswaEdit.value = null
+  fetchSiswa()
 }
 
 onMounted(fetchSiswa)
