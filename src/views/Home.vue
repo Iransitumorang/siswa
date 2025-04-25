@@ -44,7 +44,7 @@
             </button>
           </div>
           
-          <select v-model="sortKey" class="form-select w-auto me-2">
+          <select v-model="sortKey" class="form-select w-auto me-2" @change="applySort">
             <option value="">Sort By</option>
             <option value="nama">Nama</option>
             <option value="alamat">Alamat</option>
@@ -68,7 +68,7 @@
             </tr>
           </thead>
           <tbody class="align-middle text-center">
-            <tr v-for="(siswa, index) in filteredSiswa" :key="siswa.id">
+            <tr v-for="(siswa, index) in sortedAndFilteredSiswa" :key="siswa.id">
               <td>{{ index + 1 }}</td>
               <td>{{ capitalizeWords(siswa.nama) }}</td>
               <td>{{ capitalizeWords(siswa.alamat) }}</td>
@@ -88,7 +88,7 @@
                 </button>
               </td>
             </tr>
-            <tr v-if="filteredSiswa.length === 0">
+            <tr v-if="sortedAndFilteredSiswa.length === 0">
               <td colspan="5" class="text-muted">
                 <i class="bi bi-exclamation-circle me-1"></i>Tidak ditemukan data siswa
               </td>
@@ -122,17 +122,33 @@ export default {
     }
   },
   computed: {
-    sortedSiswa() {
-      if (!this.sortKey) return this.filteredSiswa
-      return [...this.filteredSiswa].sort((a, b) => {
-        let valA = a[this.sortKey]
-        let valB = b[this.sortKey]
-        if (typeof valA === 'string') valA = valA.toLowerCase()
-        if (typeof valB === 'string') valB = valB.toLowerCase()
-
-        if (this.sortOrder === 'asc') return valA > valB ? 1 : -1
-        else return valA < valB ? 1 : -1
-      })
+    sortedAndFilteredSiswa() {
+      let result = [...this.filteredSiswa]
+      
+      if (this.sortKey) {
+        result.sort((a, b) => {
+          let valA = a[this.sortKey]
+          let valB = b[this.sortKey]
+          
+          // Handle string comparison
+          if (typeof valA === 'string') {
+            valA = valA.toLowerCase()
+            valB = valB.toLowerCase()
+            return this.sortOrder === 'asc' 
+              ? valA.localeCompare(valB)
+              : valB.localeCompare(valA)
+          }
+          
+          // Handle number comparison
+          if (this.sortOrder === 'asc') {
+            return valA - valB
+          } else {
+            return valB - valA
+          }
+        })
+      }
+      
+      return result
     },
   },
   methods: {
@@ -161,6 +177,9 @@ export default {
     clearSearch() {
       this.searchQuery = ''
       this.filteredSiswa = [...this.siswa]
+    },
+    applySort() {
+      // Sorting logic now handled in computed property
     },
     async hapusSiswa(id) {
       const confirm = await Swal.fire({
