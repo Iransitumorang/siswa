@@ -1,15 +1,20 @@
 <template>
   <div class="main-wrapper py-4">
     <div class="container bg-white rounded shadow p-4">
-      <header class="text-center mb-4">
-        <h1 class="fw-bold text-success">CRUD DATA SISWA</h1>
-        <p class="text-muted">Sistem manajemen data siswa menggunakan Vue.js dan Quarkus</p>
+      <header class="text-center mb-4 main-header">
+        <h1 class="fw-bold text-white">
+          <i class="bi bi-people-fill me-2"></i>CRUD DATA SISWA
+        </h1>
+        <p class="text-white">
+          <i class="bi bi-gear-wide-connected me-1"></i>Sistem manajemen data siswa menggunakan Vue.js dan Quarkus
+        </p>
       </header>
 
       <SiswaForm
         :siswaEdit="siswaEdit"
         @siswa-added="getData"
         @cancel-edit="siswaEdit = null"
+        class="form-section"
       />
 
       <div class="d-flex justify-content-end mb-3">
@@ -26,13 +31,13 @@
 
       <div class="table-responsive">
         <table class="table table-bordered table-striped table-hover">
-          <thead class="table-success text-center align-middle">
+          <thead class="table-header text-center align-middle">
             <tr>
-              <th>No</th>
-              <th>Nama</th>
-              <th>Alamat</th>
-              <th>Umur</th>
-              <th>Aksi</th>
+              <th><i class="bi bi-hash me-1"></i>No</th>
+              <th><i class="bi bi-person-fill me-1"></i>Nama</th>
+              <th><i class="bi bi-house-door-fill me-1"></i>Alamat</th>
+              <th><i class="bi bi-calendar3 me-1"></i>Umur</th>
+              <th><i class="bi bi-activity me-1"></i>Aksi</th>
             </tr>
           </thead>
           <tbody class="align-middle text-center">
@@ -57,7 +62,9 @@
               </td>
             </tr>
             <tr v-if="sortedSiswa.length === 0">
-              <td colspan="5">Belum ada data siswa</td>
+              <td colspan="5" class="text-muted">
+                <i class="bi bi-exclamation-circle me-1"></i>Belum ada data siswa
+              </td>
             </tr>
           </tbody>
         </table>
@@ -147,11 +154,43 @@ export default {
 
 <style scoped>
 .main-wrapper {
-  background: linear-gradient(135deg, #1abc9c, #2ecc71, #27ae60);
+  background: linear-gradient(135deg, #2b8a3e, #40c057, #2b8a3e);
   background-size: 400% 400%;
   animation: gradientFlow 15s ease infinite;
   min-height: 100vh;
   padding-top: 20px;
+}
+
+.main-header {
+  background: linear-gradient(135deg, #2b8a3e, #40c057);
+  padding: 1.5rem;
+  border-radius: 10px;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 20px rgba(43, 138, 62, 0.3);
+}
+
+.form-section {
+  background: linear-gradient(135deg, #2b8a3e, #40c057);
+  padding: 1.5rem;
+  border-radius: 10px;
+  margin-bottom: 2rem;
+  color: white;
+}
+
+.container {
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 15px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.table-header {
+  background: linear-gradient(135deg, #2b8a3e, #40c057);
+  color: white;
+}
+
+.table {
+  background-color: rgba(255, 255, 255, 0.98);
 }
 
 @keyframes gradientFlow {
@@ -165,5 +204,24 @@ export default {
     background-position: 0% 50%;
   }
 }
-</style>
 
+.btn-outline-success {
+  border-color: #2b8a3e;
+  color: #2b8a3e;
+}
+
+.btn-outline-success:hover {
+  background-color: #2b8a3e;
+  color: white;
+}
+
+.btn-warning {
+  background-color: #ffc107;
+  border-color: #ffc107;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  border-color: #dc3545;
+}
+</style>
