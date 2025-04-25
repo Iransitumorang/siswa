@@ -1,176 +1,169 @@
 <template>
-  <div class="min-vh-100 bg-success-gradient">
-    <div class="container py-5">
-      <div class="row justify-content-center">
-        <div class="col-lg-10">
-          <!-- Header Tengah -->
-          <div class="text-center mb-5 text-white">
-            <h1 class="display-5 fw-bold mb-3">
-              <i class="bi bi-people-fill me-2"></i>
-              MANAJEMEN SISWA
-            </h1>
-            <p class="lead opacity-75">
-              Sistem pengelolaan data siswa berbasis Quarkus dan Vue.js
-            </p>
-          </div>
+  <div class="main-wrapper py-4">
+    <div class="container bg-white rounded shadow p-4">
+      <header class="text-center mb-4">
+        <h1 class="fw-bold text-success">CRUD DATA SISWA</h1>
+        <p class="text-muted">Sistem manajemen data siswa menggunakan Vue.js dan Quarkus</p>
+      </header>
 
-          <SiswaForm 
-            :siswaEdit="siswaEdit" 
-            @siswa-added="handleSiswaAdded"
-            @cancel-edit="siswaEdit = null"
-          />
+      <SiswaForm
+        :siswaEdit="siswaEdit"
+        @siswa-added="getData"
+        @cancel-edit="siswaEdit = null"
+      />
 
-          <div class="card shadow-sm border-0 bg-white bg-opacity-90">
-            <div v-if="siswaList.length">
-              <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                  <thead class="bg-success text-white">
-                    <tr>
-                      <th class="text-center">No</th>
-                      <th>Nama</th>
-                      <th>Alamat</th>
-                      <th class="text-center">Umur</th>
-                      <th class="text-center">Aksi</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="(siswa, index) in siswaList" :key="siswa.id">
-                      <td class="text-center">{{ index + 1 }}</td>
-                      <td class="fw-semibold">{{ siswa.nama }}</td>
-                      <td>{{ siswa.alamat }}</td>
-                      <td class="text-center">{{ siswa.umur }}</td>
-                      <td class="text-center">
-                        <button
-                          @click="editSiswa(siswa)"
-                          class="btn btn-sm btn-warning me-2"
-                        >
-                          <i class="bi bi-pencil-fill"></i>
-                        </button>
-                        <button
-                          @click="hapusSiswa(siswa.id)"
-                          class="btn btn-sm btn-danger"
-                        >
-                          <i class="bi bi-trash-fill"></i>
-                        </button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
+      <div class="d-flex justify-content-end mb-3">
+        <select v-model="sortKey" class="form-select w-auto me-2">
+          <option value="">Sort By</option>
+          <option value="nama">Nama</option>
+          <option value="alamat">Alamat</option>
+          <option value="umur">Umur</option>
+        </select>
+        <button class="btn btn-outline-success btn-sm" @click="toggleSortOrder">
+          <i class="bi" :class="sortOrder === 'asc' ? 'bi-sort-alpha-down' : 'bi-sort-alpha-up'"></i>
+        </button>
+      </div>
 
-            <div v-if="!siswaList.length" class="text-center py-5">
-              <i class="bi bi-emoji-frown display-5 text-muted"></i>
-              <p class="mt-3 text-muted">Belum ada data siswa</p>
-            </div>
-          </div>
-        </div>
+      <div class="table-responsive">
+        <table class="table table-bordered table-striped table-hover">
+          <thead class="table-success text-center align-middle">
+            <tr>
+              <th>No</th>
+              <th>Nama</th>
+              <th>Alamat</th>
+              <th>Umur</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody class="align-middle text-center">
+            <tr v-for="(siswa, index) in sortedSiswa" :key="siswa.id">
+              <td>{{ index + 1 }}</td>
+              <td>{{ capitalizeWords(siswa.nama) }}</td>
+              <td>{{ capitalizeWords(siswa.alamat) }}</td>
+              <td>{{ siswa.umur }}</td>
+              <td>
+                <button
+                  @click="editSiswa(siswa)"
+                  class="btn btn-sm btn-warning text-white me-2"
+                >
+                  <i class="bi bi-pencil-square"></i>
+                </button>
+                <button
+                  @click="hapusSiswa(siswa.id)"
+                  class="btn btn-sm btn-danger"
+                >
+                  <i class="bi bi-trash-fill"></i>
+                </button>
+              </td>
+            </tr>
+            <tr v-if="sortedSiswa.length === 0">
+              <td colspan="5">Belum ada data siswa</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
 </template>
 
-<script setup>
-import { ref, onMounted } from 'vue'
+<script>
 import axios from 'axios'
-import SiswaForm from '../components/SiswaForm.vue'
 import Swal from 'sweetalert2'
+import SiswaForm from '../components/SiswaForm.vue'
 
-const siswaList = ref([])
-const siswaEdit = ref(null)
+const API_URL = 'http://localhost:8081/siswa'
 
-const showSuccessAlert = (message) => {
-  Swal.fire({
-    icon: 'success',
-    title: 'Sukses!',
-    text: message,
-    timer: 2000,
-    showConfirmButton: false,
-    background: '#f8f9fa',
-    position: 'center',
-    width: 400,
-  })
-}
-
-const showErrorAlert = (message) => {
-  Swal.fire({
-    icon: 'error',
-    title: 'Gagal!',
-    text: message,
-    background: '#f8f9fa',
-    position: 'center',
-    confirmButtonColor: '#198754',
-  })
-}
-
-const fetchSiswa = async () => {
-  try {
-    const res = await axios.get('http://localhost:8081/siswa')
-    siswaList.value = res.data
-  } catch (err) {
-    showErrorAlert('Gagal mengambil data siswa')
-    console.error('Gagal ambil data:', err)
-  }
-}
-
-const hapusSiswa = async (id) => {
-  const { isConfirmed } = await Swal.fire({
-    title: 'Yakin ingin menghapus?',
-    text: "Data yang dihapus tidak dapat dikembalikan!",
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonColor: '#d33',
-    cancelButtonColor: '#3085d6',
-    confirmButtonText: 'Ya, Hapus!',
-    cancelButtonText: 'Batal',
-  })
-
-  if (isConfirmed) {
-    try {
-      await axios.delete(`http://localhost:8081/siswa/${id}`)
-      showSuccessAlert('Data siswa berhasil dihapus')
-      fetchSiswa()
-    } catch (err) {
-      showErrorAlert('Gagal menghapus data siswa')
-      console.error('Gagal hapus:', err)
+export default {
+  components: {
+    SiswaForm,
+  },
+  data() {
+    return {
+      siswa: [],
+      siswaEdit: null,
+      sortKey: '',
+      sortOrder: 'asc',
     }
-  }
-}
+  },
+  computed: {
+    sortedSiswa() {
+      if (!this.sortKey) return this.siswa
+      return [...this.siswa].sort((a, b) => {
+        let valA = a[this.sortKey]
+        let valB = b[this.sortKey]
+        if (typeof valA === 'string') valA = valA.toLowerCase()
+        if (typeof valB === 'string') valB = valB.toLowerCase()
 
-const editSiswa = (siswa) => {
-  siswaEdit.value = siswa
-}
+        if (this.sortOrder === 'asc') return valA > valB ? 1 : -1
+        else return valA < valB ? 1 : -1
+      })
+    },
+  },
+  methods: {
+    async getData() {
+      try {
+        const response = await axios.get(API_URL)
+        this.siswa = response.data
+      } catch (error) {
+        console.error('Gagal mengambil data:', error)
+      }
+    },
+    async hapusSiswa(id) {
+      const confirm = await Swal.fire({
+        title: 'Yakin?',
+        text: 'Data akan dihapus permanen!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Ya, hapus!',
+      })
 
-const handleSiswaAdded = () => {
-  fetchSiswa()
-  siswaEdit.value = null
+      if (confirm.isConfirmed) {
+        try {
+          await axios.delete(`${API_URL}/${id}`)
+          this.getData()
+          Swal.fire('Dihapus!', 'Data siswa berhasil dihapus.', 'success')
+        } catch (error) {
+          console.error('Gagal menghapus data:', error)
+        }
+      }
+    },
+    editSiswa(siswa) {
+      this.siswaEdit = { ...siswa }
+    },
+    toggleSortOrder() {
+      this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc'
+    },
+    capitalizeWords(text) {
+      return text.replace(/\b\w/g, (char) => char.toUpperCase())
+    },
+  },
+  mounted() {
+    this.getData()
+  },
 }
-
-onMounted(fetchSiswa)
 </script>
 
 <style scoped>
-.bg-success-gradient {
-  background: linear-gradient(135deg, #198754 0%, #2a9d8f 100%);
+.main-wrapper {
+  background: linear-gradient(135deg, #1abc9c, #2ecc71, #27ae60);
+  background-size: 400% 400%;
+  animation: gradientFlow 15s ease infinite;
+  min-height: 100vh;
+  padding-top: 20px;
 }
 
-.table-hover tbody tr:hover {
-  background-color: rgba(40, 167, 69, 0.1);
-}
-
-.card {
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-thead {
-  background: linear-gradient(135deg, #20c997 0%, #198754 100%);
-}
-
-.btn-sm {
-  padding: 0.25rem 0.5rem;
-  font-size: 0.875rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+@keyframes gradientFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 </style>
+
