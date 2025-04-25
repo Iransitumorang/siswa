@@ -17,16 +17,43 @@
         class="form-section"
       />
 
-      <div class="d-flex justify-content-end mb-3">
-        <select v-model="sortKey" class="form-select w-auto me-2">
-          <option value="">Sort By</option>
-          <option value="nama">Nama</option>
-          <option value="alamat">Alamat</option>
-          <option value="umur">Umur</option>
-        </select>
-        <button class="btn btn-outline-success btn-sm" @click="toggleSortOrder">
-          <i class="bi" :class="sortOrder === 'asc' ? 'bi-sort-alpha-down' : 'bi-sort-alpha-up'"></i>
-        </button>
+      <div class="row mb-3">
+        <div class="col-md-6"></div>
+        <div class="col-md-6 d-flex justify-content-end">
+          <div class="input-group me-3" style="width: 300px">
+            <input 
+              type="text" 
+              class="form-control" 
+              placeholder="Cari siswa..." 
+              v-model="searchQuery"
+              @input="applySearch"
+            >
+            <button 
+              v-if="searchQuery" 
+              class="btn btn-outline-secondary" 
+              type="button" 
+              @click="clearSearch"
+            >
+              <i class="bi bi-x"></i>
+            </button>
+            <button 
+              class="btn btn-success" 
+              type="button"
+            >
+              <i class="bi bi-search"></i>
+            </button>
+          </div>
+          
+          <select v-model="sortKey" class="form-select w-auto me-2">
+            <option value="">Sort By</option>
+            <option value="nama">Nama</option>
+            <option value="alamat">Alamat</option>
+            <option value="umur">Umur</option>
+          </select>
+          <button class="btn btn-outline-success btn-sm" @click="toggleSortOrder">
+            <i class="bi" :class="sortOrder === 'asc' ? 'bi-sort-alpha-down' : 'bi-sort-alpha-up'"></i>
+          </button>
+        </div>
       </div>
 
       <div class="table-responsive">
@@ -41,7 +68,7 @@
             </tr>
           </thead>
           <tbody class="align-middle text-center">
-            <tr v-for="(siswa, index) in sortedSiswa" :key="siswa.id">
+            <tr v-for="(siswa, index) in filteredSiswa" :key="siswa.id">
               <td>{{ index + 1 }}</td>
               <td>{{ capitalizeWords(siswa.nama) }}</td>
               <td>{{ capitalizeWords(siswa.alamat) }}</td>
@@ -61,9 +88,9 @@
                 </button>
               </td>
             </tr>
-            <tr v-if="sortedSiswa.length === 0">
+            <tr v-if="filteredSiswa.length === 0">
               <td colspan="5" class="text-muted">
-                <i class="bi bi-exclamation-circle me-1"></i>Belum ada data siswa
+                <i class="bi bi-exclamation-circle me-1"></i>Tidak ditemukan data siswa
               </td>
             </tr>
           </tbody>
@@ -90,12 +117,14 @@ export default {
       siswaEdit: null,
       sortKey: '',
       sortOrder: 'asc',
+      searchQuery: '',
+      filteredSiswa: []
     }
   },
   computed: {
     sortedSiswa() {
-      if (!this.sortKey) return this.siswa
-      return [...this.siswa].sort((a, b) => {
+      if (!this.sortKey) return this.filteredSiswa
+      return [...this.filteredSiswa].sort((a, b) => {
         let valA = a[this.sortKey]
         let valB = b[this.sortKey]
         if (typeof valA === 'string') valA = valA.toLowerCase()
@@ -111,9 +140,27 @@ export default {
       try {
         const response = await axios.get(API_URL)
         this.siswa = response.data
+        this.filteredSiswa = [...this.siswa]
       } catch (error) {
         console.error('Gagal mengambil data:', error)
       }
+    },
+    applySearch() {
+      if (!this.searchQuery) {
+        this.filteredSiswa = [...this.siswa]
+        return
+      }
+      
+      const query = this.searchQuery.toLowerCase()
+      this.filteredSiswa = this.siswa.filter(siswa => 
+        siswa.nama.toLowerCase().includes(query) ||
+        siswa.alamat.toLowerCase().includes(query) ||
+        siswa.umur.toString().includes(query)
+      )
+    },
+    clearSearch() {
+      this.searchQuery = ''
+      this.filteredSiswa = [...this.siswa]
     },
     async hapusSiswa(id) {
       const confirm = await Swal.fire({
@@ -223,5 +270,10 @@ export default {
 .btn-danger {
   background-color: #dc3545;
   border-color: #dc3545;
+}
+
+.input-group-text {
+  background-color: #2b8a3e;
+  border-color: #2b8a3e;
 }
 </style>
