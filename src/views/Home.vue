@@ -300,4 +300,131 @@ export default {
   background-color: #2b8a3e;
   border-color: #2b8a3e;
 }
+
+.dark-mode .table,
+.dark-mode .table-header,
+.dark-mode .table th,
+.dark-mode .table td {
+  background-color: var(--dark-card) !important;
+  color: var(--dark-text) !important;
+  border-color: var(--dark-border) !important;
+}
+
+.dark-mode .table th,
+.dark-mode .table-header {
+  background-color: var(--dark-hover) !important;
+  color: var(--dark-text) !important;
+}
+
+.dark-mode .table-striped > tbody > tr:nth-of-type(odd) {
+  background-color: #232323 !important;
+}
+
+.dark-mode .table-hover tbody tr:hover {
+  background-color: #292929 !important;
+  color: var(--dark-text) !important;
+}
+
+.dark-mode .btn-success,
+.dark-mode .btn-outline-success {
+  background-color: var(--dark-success) !important;
+  border-color: var(--dark-success) !important;
+  color: #fff !important;
+  box-shadow: 0 2px 4px var(--dark-shadow) !important;
+}
+
+.dark-mode .btn-outline-success:hover,
+.dark-mode .btn-success:hover {
+  background-color: #157347 !important;
+  border-color: #157347 !important;
+  color: #fff !important;
+}
+
+.dark-mode .btn-outline-secondary {
+  background-color: var(--dark-input) !important;
+  border-color: var(--dark-border) !important;
+  color: var(--dark-text) !important;
+}
+
+.dark-mode .btn-outline-secondary:hover {
+  background-color: var(--dark-hover) !important;
+  color: var(--dark-text) !important;
+  border-color: var(--dark-success) !important;
+}
+
+.dark-mode .btn-success {
+  background-color: var(--dark-success) !important;
+  border-color: var(--dark-success) !important;
+  color: #fff !important;
+  box-shadow: 0 2px 4px var(--dark-shadow) !important;
+}
+
+.dark-mode .form-select {
+  background-color: var(--dark-input) !important;
+  color: var(--dark-text) !important;
+  border-color: var(--dark-border) !important;
+}
+
+.dark-mode .form-select:focus {
+  border-color: var(--dark-success) !important;
+  box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25) !important;
+}
+
+.dark-mode .btn-light,
+.dark-mode button.btn-light {
+  background-color: var(--dark-input) !important;
+  color: #4caf50 !important;
+  border-color: var(--dark-border) !important;
+  box-shadow: 0 2px 4px var(--dark-shadow) !important;
+}
+
+.dark-mode .btn-light:hover,
+.dark-mode button.btn-light:hover {
+  background-color: var(--dark-hover) !important;
+  color: #43d17a !important;
+  border-color: var(--dark-success) !important;
+}
+
+.dark-mode .btn-outline-light,
+.dark-mode button.btn-outline-light {
+  background-color: transparent !important;
+  color: #fff !important;
+  border-color: var(--dark-border) !important;
+}
+
+.dark-mode .btn-outline-light:hover,
+.dark-mode button.btn-outline-light:hover {
+  background-color: var(--dark-hover) !important;
+  color: #fff !important;
+  border-color: var(--dark-success) !important;
+}
+
+.dark-mode .container,
+.dark-mode .container * {
+  color: #4caf50 !important;
+}
+
+.dark-mode *:not(i) {
+  color: #4caf50 !important;
+}
+
+/* Placeholder input */
+.dark-mode input::placeholder,
+.dark-mode textarea::placeholder {
+  color: #4caf50 !important;
+  opacity: 1 !important;
+}
+
+/* Tombol (button) */
+.dark-mode button,
+.dark-mode .btn,
+.dark-mode .btn * {
+  color: #4caf50 !important;
+}
+
+/* Select option */
+.dark-mode select,
+.dark-mode option {
+  color: #4caf50 !important;
+}
 </style>

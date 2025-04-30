@@ -261,4 +261,71 @@ body {
 .dark-mode .text-primary {
   color: #1976d2 !important;
 }
+
+.dark-mode .swal2-popup {
+  background: var(--dark-card) !important;
+  color: var(--dark-text) !important;
+  border: 1px solid var(--dark-border) !important;
+  box-shadow: 0 4px 16px var(--dark-shadow) !important;
+}
+.dark-mode .swal2-title,
+.dark-mode .swal2-html-container {
+  color: var(--dark-text) !important;
+}
+.dark-mode .swal2-confirm,
+.dark-mode .swal2-cancel {
+  background-color: var(--dark-success) !important;
+  color: #fff !important;
+  border: none !important;
+}
+
+.dark-mode .btn-light,
+.dark-mode button.btn-light {
+  background-color: var(--dark-input) !important;
+  color: #4caf50 !important;
+  border-color: var(--dark-border) !important;
+  box-shadow: 0 2px 4px var(--dark-shadow) !important;
+}
+
+.dark-mode .btn-light:hover,
+.dark-mode button.btn-light:hover {
+  background-color: var(--dark-hover) !important;
+  color: #43d17a !important;
+  border-color: var(--dark-success) !important;
+}
+
+.dark-mode, .dark-mode *:not(i) {
+  color: #4caf50 !important;
+}
+
+.dark-mode input::placeholder,
+.dark-mode textarea::placeholder {
+  color: #4caf50 !important;
+  opacity: 1 !important;
+}
+
+.dark-mode button,
+.dark-mode .btn,
+.dark-mode .btn * {
+  color: #4caf50 !important;
+}
+
+.dark-mode select,
+.dark-mode option {
+  color: #4caf50 !important;
+}
+
+.dark-mode th,
+.dark-mode td,
+.dark-mode thead,
+.dark-mode tbody,
+.dark-mode tfoot,
+.dark-mode tr {
+  color: #4caf50 !important;
+}
+
+.dark-mode table,
+.dark-mode table * {
+  color: #4caf50 !important;
+}
 </style>

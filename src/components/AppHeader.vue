@@ -137,33 +137,34 @@ const handleLogout = async () => {
 
 .dark-mode .table {
   background-color: var(--dark-card);
-  color: #000;
+  color: var(--dark-text);
 }
 
 .dark-mode .table td,
 .dark-mode .table th {
-  color: #000;
+  color: var(--dark-text);
   border-color: var(--dark-border);
+  background-color: var(--dark-card);
 }
 
 .dark-mode .table th {
   font-weight: 600;
   letter-spacing: 0.5px;
-  background-color: #e0e0e0;
+  background-color: var(--dark-hover);
 }
 
 .dark-mode .table td {
   font-weight: 400;
-  background-color: #f5f5f5;
+  background-color: var(--dark-card);
 }
 
 .dark-mode .table-striped > tbody > tr:nth-of-type(odd) {
-  background-color: #f0f0f0;
+  background-color: var(--dark-hover);
 }
 
 .dark-mode .table-hover tbody tr:hover {
-  background-color: #e8e8e8;
-  color: #000;
+  background-color: var(--dark-hover);
+  color: var(--dark-text);
 }
 
 .dark-mode .btn-outline-light:hover {

@@ -222,4 +222,47 @@ const hapusSiswa = async (id) => {
   padding: 0.25rem 0.5rem;
   font-size: 0.8125rem;
 }
+
+/* Dark mode styles */
+.dark-mode .card-body *:not(.btn):not(i),
+.dark-mode .card-body,
+.dark-mode .card-body h2,
+.dark-mode .card-body input,
+.dark-mode .card-body .input-group-text {
+  color: #4caf50 !important;
+}
+
+.dark-mode .card-body input::placeholder {
+  color: #4caf50 !important;
+  opacity: 0.7 !important;
+}
+
+.dark-mode .bg-success-gradient {
+  background: linear-gradient(135deg, #1a3e1a 0%, #1a4a42 100%) !important;
+}
+
+.dark-mode .input-group-text {
+  background-color: var(--dark-input) !important;
+  border-color: var(--dark-border) !important;
+}
+
+.dark-mode .form-control {
+  background-color: var(--dark-input) !important;
+  border-color: var(--dark-border) !important;
+  color: #4caf50 !important;
+}
+
+.dark-mode .btn-light {
+  background-color: var(--dark-input) !important;
+  border-color: var(--dark-border) !important;
+}
+
+.dark-mode .btn-outline-light {
+  border-color: var(--dark-border) !important;
+  color: #4caf50 !important;
+}
+
+.dark-mode .btn-outline-light:hover {
+  background-color: rgba(25, 135, 84, 0.2) !important;
+}
 </style>

@@ -192,4 +192,8 @@ const goToRegister = () => {
   background-color: var(--dark-success) !important;
   color: white !important;
 }
+
+.dark-mode, .dark-mode * {
+  color: #4caf50 !important;
+}
 </style> 
