@@ -263,7 +263,15 @@ const handleLogout = async () => {
 }
 
 .dark-mode .dropdown-item i {
-  color: var(--dark-text);
+  color: #4caf50;
+}
+
+.dark-mode .dropdown-item:hover i {
+  color: #43d17a;
+}
+
+.dark-mode .bi-mortarboard-fill {
+  color: #4caf50;
 }
 
 .profile-btn {
