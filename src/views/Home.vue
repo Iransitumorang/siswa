@@ -399,8 +399,8 @@ export default {
   border-color: var(--dark-success) !important;
 }
 
-.dark-mode .container,
-.dark-mode .container * {
+.dark-mode .container[data-v-2dc54a20],
+.dark-mode .container[data-v-2dc54a20] * {
   color: #4caf50 !important;
 }
 
