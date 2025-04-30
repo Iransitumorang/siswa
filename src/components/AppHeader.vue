@@ -38,6 +38,31 @@
           </button>
           <ul class="dropdown-menu dropdown-menu-end">
             <li>
+              <a class="dropdown-item" href="#">
+                <i class="bi bi-person-circle me-2"></i>
+                Profil
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#">
+                <i class="bi bi-gear me-2"></i>
+                Pengaturan
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#">
+                <i class="bi bi-journal-text me-2"></i>
+                Riwayat
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#">
+                <i class="bi bi-question-circle me-2"></i>
+                Bantuan
+              </a>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
               <a class="dropdown-item" href="#" @click="handleLogout">
                 <i class="bi bi-box-arrow-right me-2"></i>
                 Logout
@@ -216,6 +241,29 @@ const handleLogout = async () => {
 
 .dark-mode .main-wrapper {
   background: linear-gradient(135deg, #1a1a1a, #2d2d2d, #1a1a1a);
+}
+
+.dark-mode .dropdown-menu {
+  background-color: var(--dark-card);
+  border-color: var(--dark-border);
+  box-shadow: 0 4px 8px var(--dark-shadow);
+}
+
+.dark-mode .dropdown-item {
+  color: var(--dark-text);
+}
+
+.dark-mode .dropdown-item:hover {
+  background-color: var(--dark-hover);
+  color: var(--dark-text);
+}
+
+.dark-mode .dropdown-divider {
+  border-color: var(--dark-border);
+}
+
+.dark-mode .dropdown-item i {
+  color: var(--dark-text);
 }
 
 .profile-btn {
