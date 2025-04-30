@@ -3,7 +3,7 @@
     <div class="container">
       <a class="navbar-brand d-flex align-items-center" href="#">
         <i class="bi bi-mortarboard-fill me-2 fs-4"></i>
-        <span class="fw-bold">SISWA APP</span>
+        <span class="fw-bold">EduPedia</span>
       </a>
       
       <div class="d-flex align-items-center">

@@ -5,7 +5,7 @@
       <div class="container bg-white rounded shadow p-4">
         <header class="text-center mb-4 main-header">
           <h1 class="fw-bold text-white">
-            <i class="bi bi-people-fill me-2"></i>CRUD DATA SISWA
+            <i class="bi bi-people-fill me-2"></i>Platform Administrasi Sekolah
           </h1>
           <p class="text-white">
             <i class="bi bi-gear-wide-connected me-1"></i>Sistem manajemen data siswa menggunakan Vue.js dan Quarkus
