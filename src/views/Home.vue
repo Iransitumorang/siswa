@@ -1,100 +1,103 @@
 <template>
-  <div class="main-wrapper py-4">
-    <div class="container bg-white rounded shadow p-4">
-      <header class="text-center mb-4 main-header">
-        <h1 class="fw-bold text-white">
-          <i class="bi bi-people-fill me-2"></i>CRUD DATA SISWA
-        </h1>
-        <p class="text-white">
-          <i class="bi bi-gear-wide-connected me-1"></i>Sistem manajemen data siswa menggunakan Vue.js dan Quarkus
-        </p>
-      </header>
+  <div>
+    <AppHeader />
+    <div class="main-wrapper py-4">
+      <div class="container bg-white rounded shadow p-4">
+        <header class="text-center mb-4 main-header">
+          <h1 class="fw-bold text-white">
+            <i class="bi bi-people-fill me-2"></i>CRUD DATA SISWA
+          </h1>
+          <p class="text-white">
+            <i class="bi bi-gear-wide-connected me-1"></i>Sistem manajemen data siswa menggunakan Vue.js dan Quarkus
+          </p>
+        </header>
 
-      <SiswaForm
-        :siswaEdit="siswaEdit"
-        @siswa-added="getData"
-        @cancel-edit="siswaEdit = null"
-        class="form-section"
-      />
+        <SiswaForm
+          :siswaEdit="siswaEdit"
+          @siswa-added="getData"
+          @cancel-edit="siswaEdit = null"
+          class="form-section"
+        />
 
-      <div class="row mb-3">
-        <div class="col-md-6"></div>
-        <div class="col-md-6 d-flex justify-content-end">
-          <div class="input-group me-3" style="width: 300px">
-            <input 
-              type="text" 
-              class="form-control" 
-              placeholder="Cari siswa..." 
-              v-model="searchQuery"
-              @input="applySearch"
-            >
-            <button 
-              v-if="searchQuery" 
-              class="btn btn-outline-secondary" 
-              type="button" 
-              @click="clearSearch"
-            >
-              <i class="bi bi-x"></i>
-            </button>
-            <button 
-              class="btn btn-success" 
-              type="button"
-            >
-              <i class="bi bi-search"></i>
+        <div class="row mb-3">
+          <div class="col-md-6"></div>
+          <div class="col-md-6 d-flex justify-content-end">
+            <div class="input-group me-3" style="width: 300px">
+              <input 
+                type="text" 
+                class="form-control" 
+                placeholder="Cari siswa..." 
+                v-model="searchQuery"
+                @input="applySearch"
+              >
+              <button 
+                v-if="searchQuery" 
+                class="btn btn-outline-secondary" 
+                type="button" 
+                @click="clearSearch"
+              >
+                <i class="bi bi-x"></i>
+              </button>
+              <button 
+                class="btn btn-success" 
+                type="button"
+              >
+                <i class="bi bi-search"></i>
+              </button>
+            </div>
+            
+            <select v-model="sortKey" class="form-select w-auto me-2" @change="applySort">
+              <option value="">Sort By</option>
+              <option value="nama">Nama</option>
+              <option value="alamat">Alamat</option>
+              <option value="umur">Umur</option>
+            </select>
+            <button class="btn btn-outline-success btn-sm" @click="toggleSortOrder">
+              <i class="bi" :class="sortOrder === 'asc' ? 'bi-sort-alpha-down' : 'bi-sort-alpha-up'"></i>
             </button>
           </div>
-          
-          <select v-model="sortKey" class="form-select w-auto me-2" @change="applySort">
-            <option value="">Sort By</option>
-            <option value="nama">Nama</option>
-            <option value="alamat">Alamat</option>
-            <option value="umur">Umur</option>
-          </select>
-          <button class="btn btn-outline-success btn-sm" @click="toggleSortOrder">
-            <i class="bi" :class="sortOrder === 'asc' ? 'bi-sort-alpha-down' : 'bi-sort-alpha-up'"></i>
-          </button>
         </div>
-      </div>
 
-      <div class="table-responsive">
-        <table class="table table-bordered table-striped table-hover">
-          <thead class="table-header text-center align-middle">
-            <tr>
-              <th><i class="bi bi-hash me-1"></i>No</th>
-              <th><i class="bi bi-person-fill me-1"></i>Nama</th>
-              <th><i class="bi bi-house-door-fill me-1"></i>Alamat</th>
-              <th><i class="bi bi-calendar3 me-1"></i>Umur</th>
-              <th><i class="bi bi-activity me-1"></i>Aksi</th>
-            </tr>
-          </thead>
-          <tbody class="align-middle text-center">
-            <tr v-for="(siswa, index) in sortedAndFilteredSiswa" :key="siswa.id">
-              <td>{{ index + 1 }}</td>
-              <td>{{ capitalizeWords(siswa.nama) }}</td>
-              <td>{{ capitalizeWords(siswa.alamat) }}</td>
-              <td>{{ siswa.umur }}</td>
-              <td>
-                <button
-                  @click="editSiswa(siswa)"
-                  class="btn btn-sm btn-warning text-white me-2"
-                >
-                  <i class="bi bi-pencil-square"></i>
-                </button>
-                <button
-                  @click="hapusSiswa(siswa.id)"
-                  class="btn btn-sm btn-danger"
-                >
-                  <i class="bi bi-trash-fill"></i>
-                </button>
-              </td>
-            </tr>
-            <tr v-if="sortedAndFilteredSiswa.length === 0">
-              <td colspan="5" class="text-muted">
-                <i class="bi bi-exclamation-circle me-1"></i>Tidak ditemukan data siswa
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="table-responsive">
+          <table class="table table-bordered table-striped table-hover">
+            <thead class="table-header text-center align-middle">
+              <tr>
+                <th><i class="bi bi-hash me-1"></i>No</th>
+                <th><i class="bi bi-person-fill me-1"></i>Nama</th>
+                <th><i class="bi bi-house-door-fill me-1"></i>Alamat</th>
+                <th><i class="bi bi-calendar3 me-1"></i>Umur</th>
+                <th><i class="bi bi-activity me-1"></i>Aksi</th>
+              </tr>
+            </thead>
+            <tbody class="align-middle text-center">
+              <tr v-for="(siswa, index) in sortedAndFilteredSiswa" :key="siswa.id">
+                <td>{{ index + 1 }}</td>
+                <td>{{ capitalizeWords(siswa.nama) }}</td>
+                <td>{{ capitalizeWords(siswa.alamat) }}</td>
+                <td>{{ siswa.umur }}</td>
+                <td>
+                  <button
+                    @click="editSiswa(siswa)"
+                    class="btn btn-sm btn-warning text-white me-2"
+                  >
+                    <i class="bi bi-pencil-square"></i>
+                  </button>
+                  <button
+                    @click="hapusSiswa(siswa.id)"
+                    class="btn btn-sm btn-danger"
+                  >
+                    <i class="bi bi-trash-fill"></i>
+                  </button>
+                </td>
+              </tr>
+              <tr v-if="sortedAndFilteredSiswa.length === 0">
+                <td colspan="5" class="text-muted">
+                  <i class="bi bi-exclamation-circle me-1"></i>Tidak ditemukan data siswa
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
@@ -104,12 +107,14 @@
 import axios from 'axios'
 import Swal from 'sweetalert2'
 import SiswaForm from '../components/SiswaForm.vue'
+import AppHeader from '../components/AppHeader.vue'
 
 const API_URL = 'http://localhost:8081/siswa'
 
 export default {
   components: {
     SiswaForm,
+    AppHeader
   },
   data() {
     return {
@@ -223,7 +228,7 @@ export default {
   background: linear-gradient(135deg, #2b8a3e, #40c057, #2b8a3e);
   background-size: 400% 400%;
   animation: gradientFlow 15s ease infinite;
-  min-height: 100vh;
+  min-height: calc(100vh - 56px); /* Subtract navbar height */
   padding-top: 20px;
 }
 
