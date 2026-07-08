@@ -76,6 +76,7 @@
 import { ref, watch } from 'vue'
 import axios from 'axios'
 import Swal from 'sweetalert2'
+import API_BASE_URL from '../env.js'
 
 const props = defineProps({
   siswaEdit: Object,
@@ -106,7 +107,7 @@ const resetForm = () => {
   emit('cancel-edit')
 }
 
-const API_URL = 'http://localhost:8081/siswa'
+const API_URL = `${API_BASE_URL}/siswa`
 
 const showSuccessAlert = (message) => {
   Swal.fire({

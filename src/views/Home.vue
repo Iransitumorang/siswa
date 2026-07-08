@@ -63,10 +63,10 @@
             <thead class="table-header text-center align-middle">
               <tr>
                 <th><i class="bi bi-hash me-1"></i>No</th>
-                <th><i class="bi bi-person-fill me-1"></i>Nama</th>
-                <th><i class="bi bi-house-door-fill me-1"></i>Alamat</th>
-                <th><i class="bi bi-calendar3 me-1"></i>Umur</th>
-                <th><i class="bi bi-activity me-1"></i>Aksi</th>
+                <th><i class="bi bi-person-fill me-1"></i>Name</th>
+                <th><i class="bi bi-house-door-fill me-1"></i>Address</th>
+                <th><i class="bi bi-calendar3 me-1"></i>Age</th>
+                <th><i class="bi bi-activity me-1"></i>Actions</th>
               </tr>
             </thead>
             <tbody class="align-middle text-center">
@@ -108,8 +108,9 @@ import axios from 'axios'
 import Swal from 'sweetalert2'
 import SiswaForm from '../components/SiswaForm.vue'
 import AppHeader from '../components/AppHeader.vue'
+import API_BASE_URL from '../env.js'
 
-const API_URL = 'http://localhost:8081/siswa'
+const API_URL = `${API_BASE_URL}/siswa`
 
 export default {
   components: {
