@@ -63,6 +63,7 @@
             <thead class="table-header text-center align-middle">
               <tr>
                 <th><i class="bi bi-hash me-1"></i>No</th>
+                <th><i class="bi bi-image me-1"></i>Foto</th>
                 <th><i class="bi bi-person-fill me-1"></i>Name</th>
                 <th><i class="bi bi-house-door-fill me-1"></i>Address</th>
                 <th><i class="bi bi-calendar3 me-1"></i>Age</th>
@@ -72,6 +73,39 @@
             <tbody class="align-middle text-center">
               <tr v-for="(siswa, index) in sortedAndFilteredSiswa" :key="siswa.id">
                 <td>{{ index + 1 }}</td>
+                <td>
+                  <!-- Hidden file input per baris -->
+                  <input
+                    type="file"
+                    :id="`foto-input-${siswa.id}`"
+                    accept="image/jpeg,image/png,image/gif,image/webp"
+                    class="d-none"
+                    @change="uploadFotoSiswa($event, siswa)"
+                  />
+                  <!-- Foto / Placeholder — klik untuk upload -->
+                  <div
+                    class="foto-cell"
+                    @click="triggerFotoUpload(siswa.id)"
+                    :title="siswa.foto ? 'Klik untuk ganti foto' : 'Klik untuk upload foto'"
+                  >
+                    <img
+                      v-if="siswa.foto"
+                      :src="`${API_BASE_URL}/uploads/${siswa.foto}`"
+                      class="siswa-thumbnail"
+                      :alt="siswa.nama"
+                      @error="handleImgError"
+                    />
+                    <span v-else class="no-foto"><i class="bi bi-person-circle"></i></span>
+                    <!-- Overlay loading -->
+                    <div v-if="uploadingFotoId === siswa.id" class="foto-loading">
+                      <div class="spinner-border spinner-border-sm text-white"></div>
+                    </div>
+                    <!-- Overlay hover hint -->
+                    <div class="foto-hover-hint">
+                      <i class="bi bi-camera-fill"></i>
+                    </div>
+                  </div>
+                </td>
                 <td>{{ capitalizeWords(siswa.nama) }}</td>
                 <td>{{ capitalizeWords(siswa.alamat) }}</td>
                 <td>{{ siswa.umur }}</td>
@@ -91,7 +125,7 @@
                 </td>
               </tr>
               <tr v-if="sortedAndFilteredSiswa.length === 0">
-                <td colspan="5" class="text-muted">
+                <td colspan="6" class="text-muted">
                   <i class="bi bi-exclamation-circle me-1"></i>Tidak ditemukan data siswa
                 </td>
               </tr>
@@ -112,6 +146,7 @@ import API_BASE_URL from '../env.js'
 
 const API_URL = `${API_BASE_URL}/siswa`
 
+
 export default {
   components: {
     SiswaForm,
@@ -124,7 +159,9 @@ export default {
       sortKey: '',
       sortOrder: 'asc',
       searchQuery: '',
-      filteredSiswa: []
+      filteredSiswa: [],
+      API_BASE_URL,
+      uploadingFotoId: null,
     }
   },
   computed: {
@@ -217,6 +254,61 @@ export default {
     capitalizeWords(text) {
       return text.replace(/\b\w/g, (char) => char.toUpperCase())
     },
+    handleImgError(event) {
+      event.target.style.display = 'none'
+    },
+    triggerFotoUpload(siswaId) {
+      document.getElementById(`foto-input-${siswaId}`)?.click()
+    },
+    async uploadFotoSiswa(event, siswa) {
+      const file = event.target.files[0]
+      if (!file) return
+
+      this.uploadingFotoId = siswa.id
+      try {
+        // 1. Upload file ke server
+        const formData = new FormData()
+        formData.append('file', file)
+        const uploadRes = await axios.post(`${API_BASE_URL}/upload`, formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        })
+        const filename = uploadRes.data.filename
+
+        // 2. Update data siswa dengan filename baru
+        await axios.put(`${API_URL}/${siswa.id}`, {
+          nama: siswa.nama,
+          alamat: siswa.alamat,
+          umur: siswa.umur,
+          foto: filename,
+        })
+
+        // 3. Update local array by ID — tanpa reorder (tidak pakai getData())
+        //    getData() mengacak posisi baris karena BE return urutan DB ID
+        const updateFoto = (arr) => {
+          const idx = arr.findIndex(s => s.id === siswa.id)
+          if (idx !== -1) arr.splice(idx, 1, { ...arr[idx], foto: filename })
+        }
+        updateFoto(this.siswa)
+        updateFoto(this.filteredSiswa)
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Foto berhasil diperbarui!',
+          timer: 1500,
+          showConfirmButton: false,
+        })
+      } catch (err) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Upload Gagal',
+          text: err.response?.data?.error || 'Gagal mengupload foto',
+          confirmButtonColor: '#198754',
+        })
+      } finally {
+        this.uploadingFotoId = null
+        event.target.value = ''
+      }
+    },
   },
   mounted() {
     this.getData()
@@ -263,6 +355,73 @@ export default {
 
 .table {
   background-color: rgba(255, 255, 255, 0.98);
+}
+
+/* Foto cell - container yang bisa diklik */
+.foto-cell {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.foto-cell:hover .foto-hover-hint {
+  opacity: 1;
+}
+
+/* Overlay hover kamera */
+.foto-hover-hint {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 1.1rem;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+/* Overlay loading spinner */
+.foto-loading {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Foto thumbnail di tabel */
+.siswa-thumbnail {
+  width: 52px;
+  height: 52px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid #2b8a3e;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  display: block;
+}
+
+.no-foto {
+  font-size: 2.4rem;
+  color: #b0b0b0;
+  display: inline-block;
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+.foto-cell:hover .no-foto {
+  color: #2b8a3e;
 }
 
 @keyframes gradientFlow {
